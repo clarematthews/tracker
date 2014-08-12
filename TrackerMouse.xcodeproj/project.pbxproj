@@ -16,7 +16,7 @@
 		ABAFB95F19991CFF0096BB4C /* libopencv_imgproc.2.4.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABAFB95C19991CFF0096BB4C /* libopencv_imgproc.2.4.8.dylib */; };
 		ABAFB96219991DF70096BB4C /* Frame.mm in Sources */ = {isa = PBXBuildFile; fileRef = ABAFB96119991DF70096BB4C /* Frame.mm */; };
 		ABAFB965199925FF0096BB4C /* Ball.mm in Sources */ = {isa = PBXBuildFile; fileRef = ABAFB964199925FF0096BB4C /* Ball.mm */; };
-		ABAFB968199932DF0096BB4C /* Circle.m in Sources */ = {isa = PBXBuildFile; fileRef = ABAFB967199932DF0096BB4C /* Circle.m */; };
+		ABAFB968199932DF0096BB4C /* Circle.mm in Sources */ = {isa = PBXBuildFile; fileRef = ABAFB967199932DF0096BB4C /* Circle.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -47,7 +47,7 @@
 		ABAFB963199925FF0096BB4C /* Ball.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ball.h; sourceTree = "<group>"; };
 		ABAFB964199925FF0096BB4C /* Ball.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Ball.mm; sourceTree = "<group>"; };
 		ABAFB966199932DF0096BB4C /* Circle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Circle.h; sourceTree = "<group>"; };
-		ABAFB967199932DF0096BB4C /* Circle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Circle.m; sourceTree = "<group>"; };
+		ABAFB967199932DF0096BB4C /* Circle.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Circle.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,9 +102,9 @@
 				ABAFB96019991DF70096BB4C /* Frame.h */,
 				ABAFB96119991DF70096BB4C /* Frame.mm */,
 				ABAFB963199925FF0096BB4C /* Ball.h */,
-				ABAFB966199932DF0096BB4C /* Circle.h */,
-				ABAFB967199932DF0096BB4C /* Circle.m */,
 				ABAFB964199925FF0096BB4C /* Ball.mm */,
+				ABAFB966199932DF0096BB4C /* Circle.h */,
+				ABAFB967199932DF0096BB4C /* Circle.mm */,
 				ABAFB94F19991B820096BB4C /* TrackerMouse.1 */,
 				ABAFB94D19991B820096BB4C /* Supporting Files */,
 			);
@@ -171,7 +171,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ABAFB94C19991B820096BB4C /* main.mm in Sources */,
-				ABAFB968199932DF0096BB4C /* Circle.m in Sources */,
+				ABAFB968199932DF0096BB4C /* Circle.mm in Sources */,
 				ABAFB96219991DF70096BB4C /* Frame.mm in Sources */,
 				ABAFB965199925FF0096BB4C /* Ball.mm in Sources */,
 			);

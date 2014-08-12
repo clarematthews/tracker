@@ -17,7 +17,13 @@ int main(int argc, const char * argv[])
 
     @autoreleasepool {
         
+        int bins = 20;
+        int ballSum = 0;
         Ball *ball = [[Ball alloc] init];
+        Circle *circ = [[Circle alloc] initWithCentre:cv::Point(253, 237) withRadius:30];
+        Mat frame = imread("frame_00001.jpg");
+        [ball setHistogram:&frame withBins:bins fromCircle:circ withPixels:&ballSum];
+        
         
         Frame *oneframe = [[Frame alloc] init];
         [oneframe showFrame];

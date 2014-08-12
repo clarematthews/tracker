@@ -11,12 +11,17 @@
 using namespace cv;
 
 @interface Circle : NSObject {
-    Point centre;
-    double radius;
-    Scalar colour;
-    int width;
+//    Point centre;
+//    double radius;
+//    Scalar colour;
+//    int width;
 }
 
--(id) initWithCentre:(Point)centre WithRadius:(double)radius;
+@property cv::Point centre;
+@property double radius;
+@property int width;
+@property Scalar colour;
+
+-(id) initWithCentre:(cv::Point)centre withRadius:(double)radius;
 
 @end

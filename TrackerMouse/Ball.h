@@ -15,6 +15,6 @@ using namespace cv;
     int*** colour;
 }
 
--(void) setHistogram:(Mat)frame :(int)bins :(Circle*)circ :(int*)histSum;
+-(void) setHistogram:(Mat*)frame withBins:(int)bins fromCircle:(Circle*)circ withPixels:(int*)histSum;
 
 @end
