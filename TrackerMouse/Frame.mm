@@ -74,6 +74,32 @@
     
     waitKey(0);
     
+    // New mouse position
+    newPoint = CGPointMake(720, 0);
+    
+    // Display for new position
+    if (CGGetDisplaysWithPoint(newPoint, 1, &displayForPoint, &count) != kCGErrorSuccess)
+    {
+        NSLog(@"Error getting display");
+    }
+    imshow("camera", frame);
+    CGDisplayMoveCursorToPoint(displayForPoint, newPoint);
+    
+    waitKey(0);
+    
+    // New mouse position
+    newPoint = CGPointMake(720, 22);
+    
+    // Display for new position
+    if (CGGetDisplaysWithPoint(newPoint, 1, &displayForPoint, &count) != kCGErrorSuccess)
+    {
+        NSLog(@"Error getting display");
+    }
+    imshow("camera", frame);
+    CGDisplayMoveCursorToPoint(displayForPoint, newPoint);
+    
+    waitKey(0);
+    
 //    Mat frame = imread("frame_00001.jpg");
 //    
 //    namedWindow("OpenCV Window", CV_WINDOW_NORMAL);

@@ -21,13 +21,35 @@ int main(int argc, const char * argv[])
     @autoreleasepool {
         
         int offsetx = 0;
-        int offsety = 44;
+        int offsety = 0;
         int bins = 20;
-        int radius = 30;
+        int radius = 50;
         Ball *ball = [[Ball alloc] init];
-        Circle *circ = [[Circle alloc] initWithCentre:cv::Point(253, 237) withRadius:30];
-        Mat frame = imread("frames/frame_00001.jpg");
-        [ball setHistogram:&frame withBins:bins fromCircle:circ];
+        
+        VideoCapture capture(0);
+        Mat frame;
+        capture.read(frame);
+        
+        Circle *circ = [[Circle alloc] initWithCentre:cv::Point(frame.cols/2, frame.rows/2) withRadius:radius];
+        bool isInitialised = false;
+        
+        while (!isInitialised) {
+            capture.read(frame);
+            flip(frame, frame, 1);
+            
+            // Add circle
+            circle(frame, circ.centre, circ.radius, circ.colour, circ.width);
+            
+            imshow("Tracker", frame);
+            
+            if (waitKey(10) == 32) {
+                [ball setHistogram:&frame withBins:bins fromCircle:circ];
+                isInitialised = true;
+                destroyWindow("Tracker");
+            }
+        }
+
+       
         
         double thresh = 0;
         int training = 5;
@@ -45,24 +67,14 @@ int main(int argc, const char * argv[])
         uint32_t count = 0;
         CGDirectDisplayID displayForPoint;
         
-        for (int i = 1; i < 205; i++) {
-            NSString *filename;
-//            string filename = "frames/frame_00";
-            if (i < 10) {
-//                filename = filename + "00" + i.str() + ".jpg";
-                filename = [[NSString alloc] initWithFormat:@"frames/frame_0000%d.jpg", i];
-            }
-            else if (i < 100) {
-                filename = [[NSString alloc] initWithFormat:@"frames/frame_000%d.jpg", i];
-            }
-            else {
-                filename = [[NSString alloc] initWithFormat:@"frames/frame_00%d.jpg", i];
-            }
-            string cppname([filename UTF8String]);
-            frame = imread(cppname);
-            namedWindow("OpenCV Window", CV_WINDOW_NORMAL);
-            moveWindow("OpenCV Window", 0, 0);
-            imshow("OpenCV Window", frame);
+        while (capture.isOpened()) {
+
+            capture.read(frame);
+            flip(frame, frame, 1);
+            resize(frame, frame, cv::Size(1440, 900));
+//            namedWindow("OpenCV Window", CV_WINDOW_NORMAL);
+//            moveWindow("OpenCV Window", 0, 0);
+//            imshow("OpenCV Window", frame);
             
             int curX = state.at<float>(0); // col
             int curY = state.at<float>(1); // row
@@ -111,20 +123,10 @@ int main(int argc, const char * argv[])
             CGDisplayMoveCursorToPoint(displayForPoint, newPoint);
             
             
-            waitKey(30);
+            if (waitKey(10) == 27) {
+                break;
+            }
         }
-        
-        
-        
-        
-        Frame *oneframe = [[Frame alloc] init];
-        [oneframe showFrame];
-        
-        
-        
-        
-        
-        
         
     }
     return 0;
