@@ -117,8 +117,8 @@ int main(int argc, const char * argv[])
         
         
         
-//        Frame *oneframe = [[Frame alloc] init];
-//        [oneframe showFrame];
+        Frame *oneframe = [[Frame alloc] init];
+        [oneframe showFrame];
         
         
         

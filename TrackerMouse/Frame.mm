@@ -16,6 +16,7 @@
     capture.read(frame);
     NSLog(@"rows: %d", frame.rows);
     NSLog(@"cols: %d", frame.cols);
+    resize(frame, frame, cv::Size(1440, 900));
     
     // Move cursor
     uint32_t count = 0;
