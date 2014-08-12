@@ -24,16 +24,28 @@ int main(int argc, const char * argv[])
         int offsety = 0;
         int bins = 20;
         int radius = 50;
-        Ball *ball = [[Ball alloc] init];
+        double highClickThresh = 0;
+        Ball *trackBall = [[Ball alloc] init];
+        Ball *clickBall = [[Ball alloc] init];
+        
+        double trackThresh = 0;
+        double lowClickThresh = 0;
+        int training = 5;
+        int pixRange = 100; // size for subframes
         
         VideoCapture capture(0);
         Mat frame;
         capture.read(frame);
         
-        Circle *circ = [[Circle alloc] initWithCentre:cv::Point(frame.cols/2, frame.rows/2) withRadius:radius];
-        bool isInitialised = false;
+        Circle *circ = [[Circle alloc] initWithCentre:cv::Point(frame.cols/2, frame.rows/2) withRadius:radius withColour:Scalar(255, 200, 50)];
+        bool isTrackInitialised = false;
+        bool isClickInitialised = false;
+        int upC = circ.centre.x - pixRange;
+        int upR = circ.centre.y - pixRange;
+        int downC = circ.centre.x + pixRange;
+        int downR = circ.centre.y + pixRange;
         
-        while (!isInitialised) {
+        while (!isClickInitialised) {
             capture.read(frame);
             flip(frame, frame, 1);
             
@@ -43,18 +55,32 @@ int main(int argc, const char * argv[])
             imshow("Tracker", frame);
             
             if (waitKey(10) == 32) {
-                [ball setHistogram:&frame withBins:bins fromCircle:circ];
-                isInitialised = true;
+                [clickBall setHistogram:&frame withBins:bins fromCircle:circ];
+                [clickBall isPresent:&frame inRegion:cv::Rect(cv::Point(upC, upR), cv::Point(downC, downR)) withBins:bins inTraining:true withLowThreshold:highClickThresh withHighThreshold:highClickThresh];
+                isClickInitialised = true;
+            }
+            
+        }
+        
+        circ.colour = Scalar(150, 150, 255);
+        
+        while (!isTrackInitialised) {
+            capture.read(frame);
+            flip(frame, frame, 1);
+            
+            // Add circle
+            circle(frame, circ.centre, circ.radius, circ.colour, circ.width);
+            
+            imshow("Tracker", frame);
+            
+            if (waitKey(10) == 32) {
+                [trackBall setHistogram:&frame withBins:bins fromCircle:circ];
+                isTrackInitialised = true;
                 destroyWindow("Tracker");
             }
+            
         }
 
-       
-        
-        double thresh = 0;
-        int training = 5;
-        int pixRange = 100; // size for subframes
-        
         Mat state(4, 1, CV_32F);
         
         state.at<float>(0) = circ.centre.x;
@@ -100,14 +126,26 @@ int main(int argc, const char * argv[])
                 }
             }
             
-            [ball findCentre:&frame inRegion:cv::Rect(cv::Point(upC, upR), cv::Point(downC, downR)) withBins:bins withRadius:radius inTraining:frameCount < training withThreshold:thresh];
+            bool isFound = [trackBall findCentre:&frame inRegion:cv::Rect(cv::Point(upC, upR), cv::Point(downC, downR)) withBins:bins withRadius:radius inTraining:frameCount < training withThreshold:trackThresh];
             
-            cv::Point centreEst = ball.centre;
+            bool isClick = [clickBall isPresent:&frame inRegion:cv::Rect(cv::Point(upC, upR), cv::Point(downC, downR)) withBins:bins inTraining:frameCount < training withLowThreshold:lowClickThresh withHighThreshold:highClickThresh];
             
-            state.at<float>(2) = (centreEst.x + upC - curX)/2; // col velocity
-            state.at<float>(3) = (centreEst.y + upR - curY)/2; // row velocity
-            state.at<float>(0) = centreEst.x + upC; // col
-            state.at<float>(1) = centreEst.y + upR; // row
+            cv::Point centreEst = trackBall.centre;
+            
+            if (isFound) {
+                state.at<float>(2) = (centreEst.x + upC - curX)/2; // col velocity
+                state.at<float>(3) = (centreEst.y + upR - curY)/2; // row velocity
+                state.at<float>(0) = centreEst.x + upC; // col
+                state.at<float>(1) = centreEst.y + upR; // row
+            }
+            else {
+                NSLog(@"x: %d, y: %d", centreEst.x, centreEst.y);
+                state.at<float>(2) = (centreEst.x - curX)/2; // col velocity
+                state.at<float>(3) = (centreEst.y - curY)/2; // row velocity
+                state.at<float>(0) = centreEst.x; // col
+                state.at<float>(1) = centreEst.y; // row
+                
+            }
             
             // New mouse position
             CGPoint newPoint = CGPointMake(state.at<float>(0) + offsetx, state.at<float>(1) + offsety);
@@ -122,6 +160,17 @@ int main(int argc, const char * argv[])
             // Move cursor
             CGDisplayMoveCursorToPoint(displayForPoint, newPoint);
             
+            // Check for click
+            if (isClick) {
+//                NSLog(@"click! ");
+            }
+            
+            ++frameCount;
+            if (frameCount == training) {
+                trackThresh = trackThresh/training/2;
+                NSLog(@"track: %f", trackThresh);
+                lowClickThresh = (lowClickThresh/training + 3*highClickThresh)/4;
+            }
             
             if (waitKey(10) == 27) {
                 break;

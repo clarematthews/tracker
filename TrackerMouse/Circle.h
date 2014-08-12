@@ -23,5 +23,6 @@ using namespace cv;
 @property Scalar colour;
 
 -(id) initWithCentre:(cv::Point)centre withRadius:(double)radius;
+-(id) initWithCentre:(cv::Point)centre withRadius:(double)radius withColour:(Scalar)colour;
 
 @end

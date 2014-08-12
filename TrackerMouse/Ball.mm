@@ -61,7 +61,7 @@
     
 }
 
--(void) findCentre:(Mat*)frame inRegion:(cv::Rect) subRegion withBins:(int) bins withRadius:(int) radius inTraining:(bool) isTraining withThreshold:(double &)threshold {
+-(bool) findCentre:(Mat*)frame inRegion:(cv::Rect) subRegion withBins:(int) bins withRadius:(int) radius inTraining:(bool) isTraining withThreshold:(double &)threshold {
     
     Mat subFrame(*frame, subRegion);
     
@@ -132,19 +132,22 @@
         
         if (isTraining) {
             threshold += maxVal;
-            break;
+            centre = centreEst;
+            return true;
         }
         else if (isSub && (maxVal < threshold)) {
+            NSLog(@"here: %f", maxVal);
             subFrame = *frame;
             isSub = false;
         }
-        else {
-            break;
+        else if (isSub) {
+            centre = centreEst;
+            return true;
         }
     }
     
     centre = centreEst;
-
+    return false;
     
 }
 
@@ -177,6 +180,41 @@ int ***getHist(Mat *imgBGR, int bins) {
     }
     
     return hist;
+}
+
+-(bool) isPresent:(Mat*)frame inRegion:(cv::Rect)subRegion withBins:(int)bins inTraining:(bool)isTraining withLowThreshold:(double&)lowThreshold withHighThreshold:(double &)highThreshold {
+    
+    Mat subFrame(*frame, subRegion);
+    
+    Mat imgHist(subFrame.rows, subFrame.cols, CV_64FC1);
+    
+    int ***hist = getHist(&subFrame, bins);
+    int testSum;
+    int testVal;
+    int histSum = subFrame.rows*subFrame.cols;
+    int fac = histSum/initPixels;
+    for (int x = 0; x < bins; ++x) {
+        for (int y = 0; y < bins; ++y) {
+            for (int z = 0; z < bins; ++z) {
+                if (hist[x][y][z] != 0) {
+                    testVal = fac*(colour[x][y][z])/(hist[x][y][z]);
+                    if (testVal < 1) {
+                        testSum++;
+                    }
+                }
+            }
+        }
+    }
+    
+    if (isTraining) {
+        lowThreshold += testSum;
+        return false;
+    }
+    else if (testSum > lowThreshold) {
+        return true;
+    }
+
+    return false;
 }
 
 @end

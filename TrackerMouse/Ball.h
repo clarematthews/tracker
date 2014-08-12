@@ -18,7 +18,8 @@ using namespace cv;
 }
 
 -(void) setHistogram:(Mat*)frame withBins:(int)bins fromCircle:(Circle*)circ;
--(void) findCentre:(Mat*)frame inRegion:(cv::Rect) subFrame withBins:(int) bins withRadius:(int) radius inTraining:(bool) isTraining withThreshold:(double &)threshold;
+-(bool) findCentre:(Mat*)frame inRegion:(cv::Rect)subRegion withBins:(int)bins withRadius:(int)radius inTraining:(bool)isTraining withThreshold:(double &)threshold;
+-(bool) isPresent:(Mat*)frame inRegion:(cv::Rect)subRegion withBins:(int)bins inTraining:(bool)isTraining withLowThreshold:(double&)lowThreshold withHighThreshold:(double&)highThreshold;
 -(cv::Point) centre;
 
 @end

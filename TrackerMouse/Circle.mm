@@ -11,11 +11,23 @@
 @implementation Circle
 
 -(id) initWithCentre:(cv::Point)cent withRadius:(double)rad {
+    self = [self initWithCentre:cent withRadius:rad withColour:Scalar(100, 100, 255)];
+//    self = [self init];
+//    if (self) {
+//        _centre = cent;
+//        _radius = rad;
+//        _colour = Scalar(100, 100, 255);
+//        _width =  3;
+//    }
+    return self;
+}
+
+-(id) initWithCentre:(cv::Point)cent withRadius:(double)rad withColour:(Scalar)col {
     self = [self init];
     if (self) {
         _centre = cent;
         _radius = rad;
-        _colour = Scalar(100, 100, 255);
+        _colour = col;
         _width =  3;
     }
     return self;
