@@ -8,8 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		ABAFB94919991B820096BB4C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABAFB94819991B820096BB4C /* Foundation.framework */; };
-		ABAFB94C19991B820096BB4C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ABAFB94B19991B820096BB4C /* main.m */; };
+		ABAFB94C19991B820096BB4C /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = ABAFB94B19991B820096BB4C /* main.mm */; };
 		ABAFB95019991B820096BB4C /* TrackerMouse.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABAFB94F19991B820096BB4C /* TrackerMouse.1 */; };
+		ABAFB95919991CCD0096BB4C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABAFB95819991CCD0096BB4C /* Cocoa.framework */; };
+		ABAFB95D19991CFF0096BB4C /* libopencv_core.2.4.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABAFB95A19991CFF0096BB4C /* libopencv_core.2.4.8.dylib */; };
+		ABAFB95E19991CFF0096BB4C /* libopencv_highgui.2.4.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABAFB95B19991CFF0096BB4C /* libopencv_highgui.2.4.8.dylib */; };
+		ABAFB95F19991CFF0096BB4C /* libopencv_imgproc.2.4.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABAFB95C19991CFF0096BB4C /* libopencv_imgproc.2.4.8.dylib */; };
+		ABAFB96219991DF70096BB4C /* Frame.mm in Sources */ = {isa = PBXBuildFile; fileRef = ABAFB96119991DF70096BB4C /* Frame.mm */; };
+		ABAFB965199925FF0096BB4C /* Ball.mm in Sources */ = {isa = PBXBuildFile; fileRef = ABAFB964199925FF0096BB4C /* Ball.mm */; };
+		ABAFB968199932DF0096BB4C /* Circle.m in Sources */ = {isa = PBXBuildFile; fileRef = ABAFB967199932DF0096BB4C /* Circle.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,9 +35,19 @@
 /* Begin PBXFileReference section */
 		ABAFB94519991B820096BB4C /* TrackerMouse */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TrackerMouse; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABAFB94819991B820096BB4C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		ABAFB94B19991B820096BB4C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		ABAFB94B19991B820096BB4C /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		ABAFB94E19991B820096BB4C /* TrackerMouse-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TrackerMouse-Prefix.pch"; sourceTree = "<group>"; };
 		ABAFB94F19991B820096BB4C /* TrackerMouse.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = TrackerMouse.1; sourceTree = "<group>"; };
+		ABAFB95819991CCD0096BB4C /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		ABAFB95A19991CFF0096BB4C /* libopencv_core.2.4.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_core.2.4.8.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.8.2/lib/libopencv_core.2.4.8.dylib; sourceTree = "<group>"; };
+		ABAFB95B19991CFF0096BB4C /* libopencv_highgui.2.4.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_highgui.2.4.8.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.8.2/lib/libopencv_highgui.2.4.8.dylib; sourceTree = "<group>"; };
+		ABAFB95C19991CFF0096BB4C /* libopencv_imgproc.2.4.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_imgproc.2.4.8.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.8.2/lib/libopencv_imgproc.2.4.8.dylib; sourceTree = "<group>"; };
+		ABAFB96019991DF70096BB4C /* Frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Frame.h; sourceTree = "<group>"; };
+		ABAFB96119991DF70096BB4C /* Frame.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Frame.mm; sourceTree = "<group>"; };
+		ABAFB963199925FF0096BB4C /* Ball.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ball.h; sourceTree = "<group>"; };
+		ABAFB964199925FF0096BB4C /* Ball.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Ball.mm; sourceTree = "<group>"; };
+		ABAFB966199932DF0096BB4C /* Circle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Circle.h; sourceTree = "<group>"; };
+		ABAFB967199932DF0096BB4C /* Circle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Circle.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,6 +55,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ABAFB95D19991CFF0096BB4C /* libopencv_core.2.4.8.dylib in Frameworks */,
+				ABAFB95E19991CFF0096BB4C /* libopencv_highgui.2.4.8.dylib in Frameworks */,
+				ABAFB95F19991CFF0096BB4C /* libopencv_imgproc.2.4.8.dylib in Frameworks */,
+				ABAFB95919991CCD0096BB4C /* Cocoa.framework in Frameworks */,
 				ABAFB94919991B820096BB4C /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -65,6 +86,10 @@
 		ABAFB94719991B820096BB4C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				ABAFB95A19991CFF0096BB4C /* libopencv_core.2.4.8.dylib */,
+				ABAFB95B19991CFF0096BB4C /* libopencv_highgui.2.4.8.dylib */,
+				ABAFB95C19991CFF0096BB4C /* libopencv_imgproc.2.4.8.dylib */,
+				ABAFB95819991CCD0096BB4C /* Cocoa.framework */,
 				ABAFB94819991B820096BB4C /* Foundation.framework */,
 			);
 			name = Frameworks;
@@ -73,7 +98,13 @@
 		ABAFB94A19991B820096BB4C /* TrackerMouse */ = {
 			isa = PBXGroup;
 			children = (
-				ABAFB94B19991B820096BB4C /* main.m */,
+				ABAFB94B19991B820096BB4C /* main.mm */,
+				ABAFB96019991DF70096BB4C /* Frame.h */,
+				ABAFB96119991DF70096BB4C /* Frame.mm */,
+				ABAFB963199925FF0096BB4C /* Ball.h */,
+				ABAFB966199932DF0096BB4C /* Circle.h */,
+				ABAFB967199932DF0096BB4C /* Circle.m */,
+				ABAFB964199925FF0096BB4C /* Ball.mm */,
 				ABAFB94F19991B820096BB4C /* TrackerMouse.1 */,
 				ABAFB94D19991B820096BB4C /* Supporting Files */,
 			);
@@ -139,7 +170,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ABAFB94C19991B820096BB4C /* main.m in Sources */,
+				ABAFB94C19991B820096BB4C /* main.mm in Sources */,
+				ABAFB968199932DF0096BB4C /* Circle.m in Sources */,
+				ABAFB96219991DF70096BB4C /* Frame.mm in Sources */,
+				ABAFB965199925FF0096BB4C /* Ball.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,6 +255,20 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TrackerMouse/TrackerMouse-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include,
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/lib,
+					/usr/local/Cellar/opencv/2.4.8.2/lib,
+				);
+				OTHER_LDFLAGS = (
+					"-lopencv_core",
+					"-lopencv_highgui",
+					"-lopencv_imgproc",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -230,6 +278,20 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TrackerMouse/TrackerMouse-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include,
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/lib,
+					/usr/local/Cellar/opencv/2.4.8.2/lib,
+				);
+				OTHER_LDFLAGS = (
+					"-lopencv_core",
+					"-lopencv_highgui",
+					"-lopencv_imgproc",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
