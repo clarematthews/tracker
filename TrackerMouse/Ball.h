@@ -13,8 +13,12 @@ using namespace cv;
 
 @interface Ball : NSObject {
     int*** colour;
+    cv::Point centre;
+    int initPixels;
 }
 
--(void) setHistogram:(Mat*)frame withBins:(int)bins fromCircle:(Circle*)circ withPixels:(int*)histSum;
+-(void) setHistogram:(Mat*)frame withBins:(int)bins fromCircle:(Circle*)circ;
+-(void) findCentre:(Mat*)frame inRegion:(cv::Rect) subFrame withBins:(int) bins withRadius:(int) radius inTraining:(bool) isTraining withThreshold:(double &)threshold;
+-(cv::Point) centre;
 
 @end
