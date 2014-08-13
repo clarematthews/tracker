@@ -185,14 +185,14 @@ int ***getHist(Mat *imgBGR, int bins) {
     return hist;
 }
 
--(bool) isPresent:(Mat*)frame inRegion:(cv::Rect)subRegion withBins:(int)bins inTraining:(bool)isTraining withLowThreshold:(double&)lowThreshold withHighThreshold:(double &)highThreshold {
+-(bool) isPresent:(Mat*)frame inRegion:(cv::Rect)subRegion withBins:(int)bins inTraining:(bool)isTraining withThreshold:(double&)threshold {
     
     Mat subFrame(*frame, subRegion);
     
     Mat imgHist(subFrame.rows, subFrame.cols, CV_64FC1);
     
     int ***hist = getHist(&subFrame, bins);
-    int testSum;
+    double testSum;
     int testVal;
     int histSum = subFrame.rows*subFrame.cols;
     int fac = histSum/initPixels;
@@ -208,12 +208,12 @@ int ***getHist(Mat *imgBGR, int bins) {
             }
         }
     }
-    
+
     if (isTraining) {
-        lowThreshold += testSum;
+        threshold += testSum;
         return false;
     }
-    else if (testSum > lowThreshold) {
+    else if (testSum > threshold) {
         return true;
     }
 

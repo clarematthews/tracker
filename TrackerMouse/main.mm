@@ -9,6 +9,8 @@
 #import "opencv2/opencv.hpp"
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
+#import <QuartzCore/CABase.h>
+#import <ApplicationServices/ApplicationServices.h>
 #import "Frame.h"
 #import "Ball.h"
 
@@ -24,12 +26,16 @@ int main(int argc, const char * argv[])
         int offsety = 0;
         int bins = 20;
         int radius = 50;
-        double highClickThresh = 0;
         Ball *trackBall = [[Ball alloc] init];
         Ball *clickBall = [[Ball alloc] init];
         
         double trackThresh = 0;
-        double lowClickThresh = 0;
+        double clickThresh = 0;
+        double clickWaitTime = 3; // secs to wait before next click
+        int clickSensitivity = 5; // number of frames ball must be present for
+        int clickFac = 1; // multiplicative factor for threshold;
+        double lastclick = -clickWaitTime;
+        int clickCount = 0;
         int training = 5;
         int pixRange = 100; // size for subframes
         int pixRangeFac = 1; // multiplicative factor to increase range
@@ -57,7 +63,8 @@ int main(int argc, const char * argv[])
             
             if (waitKey(10) == 32) {
                 [clickBall setHistogram:&frame withBins:bins fromCircle:circ];
-                [clickBall isPresent:&frame inRegion:cv::Rect(cv::Point(upC, upR), cv::Point(downC, downR)) withBins:bins inTraining:true withLowThreshold:highClickThresh withHighThreshold:highClickThresh];
+                [clickBall isPresent:&frame inRegion:cv::Rect(cv::Point(upC, upR), cv::Point(downC, downR)) withBins:bins inTraining:true withThreshold:clickThresh];
+                clickThresh = clickThresh*clickFac;
                 isClickInitialised = true;
             }
             
@@ -94,6 +101,8 @@ int main(int argc, const char * argv[])
         uint32_t count = 0;
         CGDirectDisplayID displayForPoint;
         
+        NSLog(@"thresh: %f", clickThresh);
+        
         while (capture.isOpened()) {
 
             capture.read(frame);
@@ -129,7 +138,7 @@ int main(int argc, const char * argv[])
             
             bool isFound = [trackBall findCentre:&frame inRegion:cv::Rect(cv::Point(upC, upR), cv::Point(downC, downR)) withBins:bins withRadius:radius inTraining:frameCount < training withThreshold:trackThresh];
             
-            bool isClick = [clickBall isPresent:&frame inRegion:cv::Rect(cv::Point(upC, upR), cv::Point(downC, downR)) withBins:bins inTraining:frameCount < training withLowThreshold:lowClickThresh withHighThreshold:highClickThresh];
+            bool isClick = [clickBall isPresent:&frame inRegion:cv::Rect(cv::Point(upC, upR), cv::Point(downC, downR)) withBins:bins inTraining:false withThreshold:clickThresh];
             
             cv::Point centreEst = trackBall.centre;
             
@@ -163,13 +172,28 @@ int main(int argc, const char * argv[])
             
             // Check for click
             if (isClick) {
-//                NSLog(@"click! ");
+                clickCount++;
+                if (clickCount >= clickSensitivity) {
+                    double currentTime = CACurrentMediaTime();
+                    if (currentTime > lastclick + clickWaitTime) {
+                        NSLog(@"click! ");
+                        CGEventRef clickDown = CGEventCreateMouseEvent(NULL, kCGEventLeftMouseDown, newPoint, kCGMouseButtonLeft);
+                        CGEventRef clickUp = CGEventCreateMouseEvent(NULL, kCGEventLeftMouseUp, newPoint, kCGMouseButtonLeft);
+                        CGEventPost(kCGHIDEventTap, clickDown);
+                        CGEventPost(kCGHIDEventTap, clickUp);
+                        lastclick = currentTime;
+                        clickCount = 0;
+                    }
+                }
+                
+            }
+            else {
+                clickCount = 0;
             }
             
             ++frameCount;
             if (frameCount == training) {
                 trackThresh = trackThresh/training/2;
-                lowClickThresh = (lowClickThresh/training + 9*highClickThresh)/10;
             }
             
             if (waitKey(10) == 27) {
