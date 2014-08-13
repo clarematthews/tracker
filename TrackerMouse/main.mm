@@ -56,6 +56,17 @@ int main(int argc, const char * argv[])
         int pixRange = 100; // size for subframes
         int pixRangeFac = 1; // multiplicative increase of range
         
+        int framesToAvg = 5; // number of frames to average over
+        NSMutableArray *xVals = [[NSMutableArray alloc] initWithCapacity:framesToAvg];
+        NSMutableArray *yVals = [[NSMutableArray alloc] initWithCapacity:framesToAvg];
+        for (int i = 0; i < framesToAvg; ++i) {
+            xVals[i] = [NSNumber numberWithDouble:0.0];
+            yVals[i] = [NSNumber numberWithDouble:0.0];
+        }
+        int avgLoc = 0;
+        double movingAvgX = 0;
+        double movingAvgY = 0;
+        
         Mat state(4, 1, CV_32F);
         
         state.at<float>(0) = circ.centre.x;
@@ -70,6 +81,8 @@ int main(int argc, const char * argv[])
         
         while (capture.isOpened()) {
 
+            ++frameCount;
+            
             capture.read(frame);
             flip(frame, frame, 1);
             resize(frame, frame, cv::Size(1440, 900));
@@ -108,17 +121,40 @@ int main(int argc, const char * argv[])
             if (isFound) {
                 state.at<float>(2) = (centreEst.x + upC - curX)/2; // col velocity
                 state.at<float>(3) = (centreEst.y + upR - curY)/2; // row velocity
-                state.at<float>(0) = centreEst.x + upC; // col
-                state.at<float>(1) = centreEst.y + upR; // row
+                curX = centreEst.x + upC; // col
+                curY = centreEst.y + upR; // row
                 pixRangeFac = 1;
             }
             else {
                 state.at<float>(2) = (centreEst.x - curX)/2; // col velocity
                 state.at<float>(3) = (centreEst.y - curY)/2; // row velocity
-                state.at<float>(0) = centreEst.x; // col
-                state.at<float>(1) = centreEst.y; // row
+                curX = centreEst.x; // col
+                curY = centreEst.y; // row
                 pixRangeFac = 2;
             }
+            
+            [xVals replaceObjectAtIndex:avgLoc withObject:[NSNumber numberWithDouble:curX]];
+            [yVals replaceObjectAtIndex:avgLoc withObject:[NSNumber numberWithDouble:curY]];
+            avgLoc = (avgLoc + 1)%framesToAvg;
+            
+            movingAvgX = 0;
+            for (NSNumber *num in xVals) {
+                movingAvgX += [num doubleValue];
+            }
+            movingAvgY = 0;
+            for (NSNumber *num in yVals) {
+                movingAvgY += [num doubleValue];
+            }
+            if (frameCount < framesToAvg) {
+                state.at<float>(0) = movingAvgX/frameCount;
+                state.at<float>(1) = movingAvgY/frameCount;
+            }
+            else {
+                state.at<float>(0) = movingAvgX/framesToAvg;
+                state.at<float>(1) = movingAvgY/framesToAvg;
+            }
+            
+            
             
             
             // New mouse position
@@ -138,7 +174,7 @@ int main(int argc, const char * argv[])
                 break;
             }
             
-            ++frameCount;
+            
             if (frameCount == training) {
                 thresh = thresh/training/2;
             }
