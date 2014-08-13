@@ -69,7 +69,7 @@
     
     bool isSub = true;
     
-    while (isSub) {
+    while (true) {
         Mat imgHist(subFrame.rows, subFrame.cols, CV_64FC1);
         Mat kernel(2*radius + 1, 2*radius + 1, CV_8UC1);
         int centrePix = radius + 1;
@@ -136,13 +136,16 @@
             return true;
         }
         else if (isSub && (maxVal < threshold)) {
-            NSLog(@"here: %f", maxVal);
             subFrame = *frame;
             isSub = false;
         }
         else if (isSub) {
             centre = centreEst;
             return true;
+        }
+        else if (!isSub) {
+            centre = centreEst;
+            return false;
         }
     }
     

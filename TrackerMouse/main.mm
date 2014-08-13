@@ -32,6 +32,7 @@ int main(int argc, const char * argv[])
         double lowClickThresh = 0;
         int training = 5;
         int pixRange = 100; // size for subframes
+        int pixRangeFac = 1; // multiplicative factor to increase range
         
         VideoCapture capture(0);
         Mat frame;
@@ -112,17 +113,17 @@ int main(int argc, const char * argv[])
             int downC = frame.cols;
             
             if (curY >= 0 && curX >= 0 && curY < frame.rows && curX < frame.cols) {
-                if (curX - pixRange + curDx > 0 && curX - pixRange + curDx < frame.cols) {
-                    upC = curX - pixRange + curDx;
+                if (curX - pixRange*pixRangeFac + curDx > 0 && curX - pixRange*pixRangeFac + curDx < frame.cols) {
+                    upC = curX - pixRange*pixRangeFac + curDx;
                 }
-                if (curY - pixRange + curDy > 0 && curY - pixRange + curDy < frame.rows) {
-                    upR = curY - pixRange + curDy;
+                if (curY - pixRange*pixRangeFac + curDy > 0 && curY - pixRange*pixRangeFac + curDy < frame.rows) {
+                    upR = curY - pixRange*pixRangeFac + curDy;
                 }
-                if (curX + pixRange  + curDx < frame.cols && curX + pixRange  + curDx > 0) {
-                    downC = curX + pixRange + curDx;
+                if (curX + pixRange*pixRangeFac  + curDx < frame.cols && curX + pixRange*pixRangeFac  + curDx > 0) {
+                    downC = curX + pixRange*pixRangeFac + curDx;
                 }
-                if (curY + pixRange + curDy < frame.rows && curY + pixRange + curDy > 0) {
-                    downR = curY + pixRange + curDy;
+                if (curY + pixRange*pixRangeFac + curDy < frame.rows && curY + pixRange*pixRangeFac + curDy > 0) {
+                    downR = curY + pixRange*pixRangeFac + curDy;
                 }
             }
             
@@ -137,14 +138,14 @@ int main(int argc, const char * argv[])
                 state.at<float>(3) = (centreEst.y + upR - curY)/2; // row velocity
                 state.at<float>(0) = centreEst.x + upC; // col
                 state.at<float>(1) = centreEst.y + upR; // row
+                pixRangeFac = 1;
             }
             else {
-                NSLog(@"x: %d, y: %d", centreEst.x, centreEst.y);
                 state.at<float>(2) = (centreEst.x - curX)/2; // col velocity
                 state.at<float>(3) = (centreEst.y - curY)/2; // row velocity
                 state.at<float>(0) = centreEst.x; // col
                 state.at<float>(1) = centreEst.y; // row
-                
+                pixRangeFac = 2;
             }
             
             // New mouse position
@@ -168,8 +169,7 @@ int main(int argc, const char * argv[])
             ++frameCount;
             if (frameCount == training) {
                 trackThresh = trackThresh/training/2;
-                NSLog(@"track: %f", trackThresh);
-                lowClickThresh = (lowClickThresh/training + 3*highClickThresh)/4;
+                lowClickThresh = (lowClickThresh/training + 9*highClickThresh)/10;
             }
             
             if (waitKey(10) == 27) {
