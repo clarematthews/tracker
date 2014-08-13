@@ -61,7 +61,7 @@
     
 }
 
--(void) findCentre:(Mat*)frame inRegion:(cv::Rect) subRegion withBins:(int) bins withRadius:(int) radius inTraining:(bool) isTraining withThreshold:(double &)threshold {
+-(bool) findCentre:(Mat*)frame inRegion:(cv::Rect) subRegion withBins:(int) bins withRadius:(int) radius inTraining:(bool) isTraining withThreshold:(double &)threshold {
     
     Mat subFrame(*frame, subRegion);
     
@@ -69,7 +69,7 @@
     
     bool isSub = true;
     
-    while (isSub) {
+    while (true) {
         Mat imgHist(subFrame.rows, subFrame.cols, CV_64FC1);
         Mat kernel(2*radius + 1, 2*radius + 1, CV_8UC1);
         int centrePix = radius + 1;
@@ -132,21 +132,28 @@
         
         if (isTraining) {
             threshold += maxVal;
-            break;
+            centre = centreEst;
+            return true;
         }
         else if (isSub && (maxVal < threshold)) {
             subFrame = *frame;
             isSub = false;
         }
-        else {
-            break;
+        else if (isSub) {
+            centre = centreEst;
+            return true;
+        }
+        else if (!isSub) {
+            centre = centreEst;
+            return false;
         }
     }
     
     centre = centreEst;
-
+    return false;
     
 }
+
 
 int ***getHist(Mat *imgBGR, int bins) {
     Mat frame = *imgBGR;

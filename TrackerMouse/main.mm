@@ -54,6 +54,7 @@ int main(int argc, const char * argv[])
         double thresh = 0;
         int training = 5;
         int pixRange = 100; // size for subframes
+        int pixRangeFac = 1; // multiplicative increase of range
         
         Mat state(4, 1, CV_32F);
         
@@ -86,28 +87,39 @@ int main(int argc, const char * argv[])
             int downC = frame.cols;
             
             if (curY >= 0 && curX >= 0 && curY < frame.rows && curX < frame.cols) {
-                if (curX - pixRange + curDx > 0 && curX - pixRange + curDx < frame.cols) {
-                    upC = curX - pixRange + curDx;
+                if (curX - pixRange*pixRangeFac + curDx > 0 && curX - pixRange*pixRangeFac + curDx < frame.cols) {
+                    upC = curX - pixRange*pixRangeFac + curDx;
                 }
-                if (curY - pixRange + curDy > 0 && curY - pixRange + curDy < frame.rows) {
-                    upR = curY - pixRange + curDy;
+                if (curY - pixRange*pixRangeFac + curDy > 0 && curY - pixRange*pixRangeFac + curDy < frame.rows) {
+                    upR = curY - pixRange*pixRangeFac + curDy;
                 }
-                if (curX + pixRange  + curDx < frame.cols && curX + pixRange  + curDx > 0) {
-                    downC = curX + pixRange + curDx;
+                if (curX + pixRange*pixRangeFac  + curDx < frame.cols && curX + pixRange*pixRangeFac  + curDx > 0) {
+                    downC = curX + pixRange*pixRangeFac + curDx;
                 }
-                if (curY + pixRange + curDy < frame.rows && curY + pixRange + curDy > 0) {
-                    downR = curY + pixRange + curDy;
+                if (curY + pixRange*pixRangeFac + curDy < frame.rows && curY + pixRange*pixRangeFac + curDy > 0) {
+                    downR = curY + pixRange*pixRangeFac + curDy;
                 }
             }
             
-            [ball findCentre:&frame inRegion:cv::Rect(cv::Point(upC, upR), cv::Point(downC, downR)) withBins:bins withRadius:radius inTraining:frameCount < training withThreshold:thresh];
+            bool isFound = [ball findCentre:&frame inRegion:cv::Rect(cv::Point(upC, upR), cv::Point(downC, downR)) withBins:bins withRadius:radius inTraining:frameCount < training withThreshold:thresh];
             
             cv::Point centreEst = ball.centre;
             
-            state.at<float>(2) = (centreEst.x + upC - curX)/2; // col velocity
-            state.at<float>(3) = (centreEst.y + upR - curY)/2; // row velocity
-            state.at<float>(0) = centreEst.x + upC; // col
-            state.at<float>(1) = centreEst.y + upR; // row
+            if (isFound) {
+                state.at<float>(2) = (centreEst.x + upC - curX)/2; // col velocity
+                state.at<float>(3) = (centreEst.y + upR - curY)/2; // row velocity
+                state.at<float>(0) = centreEst.x + upC; // col
+                state.at<float>(1) = centreEst.y + upR; // row
+                pixRangeFac = 1;
+            }
+            else {
+                state.at<float>(2) = (centreEst.x - curX)/2; // col velocity
+                state.at<float>(3) = (centreEst.y - curY)/2; // row velocity
+                state.at<float>(0) = centreEst.x; // col
+                state.at<float>(1) = centreEst.y; // row
+                pixRangeFac = 2;
+            }
+            
             
             // New mouse position
             CGPoint newPoint = CGPointMake(state.at<float>(0) + offsetx, state.at<float>(1) + offsety);
@@ -122,9 +134,13 @@ int main(int argc, const char * argv[])
             // Move cursor
             CGDisplayMoveCursorToPoint(displayForPoint, newPoint);
             
-            
             if (waitKey(10) == 27) {
                 break;
+            }
+            
+            ++frameCount;
+            if (frameCount == training) {
+                thresh = thresh/training/2;
             }
         }
         
