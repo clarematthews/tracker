@@ -32,8 +32,8 @@ int main(int argc, const char * argv[])
         double trackThresh = 0;
         double clickThresh = 0;
         double clickWaitTime = 3; // secs to wait before next click
-        int clickSensitivity = 3; // number of frames ball must be present for
-        double clickFac = 0.7; // multiplicative factor for threshold;
+        int clickSensitivity = 1; // number of frames ball must be present for
+        double clickFac = 0.2; // multiplicative factor for threshold;
         double lastclick = -clickWaitTime;
         int clickCount = 0;
         int training = 5;
@@ -74,6 +74,7 @@ int main(int argc, const char * argv[])
             
             if (waitKey(10) == 32) {
                 [clickBall setHistogram:&frame withBins:bins fromCircle:circ];
+                capture.read(frame);
                 [clickBall isPresent:&frame inRegion:cv::Rect(cv::Point(upC, upR), cv::Point(downC, downR)) withBins:bins inTraining:true withThreshold:clickThresh];
                 clickThresh = clickThresh*clickFac;
                 isClickInitialised = true;
@@ -132,6 +133,10 @@ int main(int argc, const char * argv[])
             int upC = 0;
             int downR = frame.rows;
             int downC = frame.cols;
+            int upRclick = 0;
+            int upCclick = 0;
+            int downRclick = frame.rows;
+            int downCclick = frame.cols;
             
             if (curY >= 0 && curX >= 0 && curY < frame.rows && curX < frame.cols) {
                 if (curX - pixRange*pixRangeFac + curDx > 0 && curX - pixRange*pixRangeFac + curDx < frame.cols) {
@@ -146,11 +151,23 @@ int main(int argc, const char * argv[])
                 if (curY + pixRange*pixRangeFac + curDy < frame.rows && curY + pixRange*pixRangeFac + curDy > 0) {
                     downR = curY + pixRange*pixRangeFac + curDy;
                 }
+                if (curX - 2*pixRange*pixRangeFac > 0 && curX - 2*pixRange*pixRangeFac < frame.cols) {
+                    upCclick = curX - 2*pixRange*pixRangeFac;
+                }
+                if (curY - 2*pixRange*pixRangeFac > 0 && curY - 2*pixRange*pixRangeFac < frame.rows) {
+                    upRclick = curY - 2*pixRange*pixRangeFac;
+                }
+                if (curX + 2*pixRange*pixRangeFac < frame.cols && curX + 2*pixRange*pixRangeFac > 0) {
+                    downCclick = curX + 2*pixRange*pixRangeFac;
+                }
+                if (curY + 2*pixRange*pixRangeFac < frame.rows && curY + 2*pixRange*pixRangeFac > 0) {
+                    downRclick = curY + 2*pixRange*pixRangeFac;
+                }
             }
             
             bool isFound = [trackBall findCentre:&frame inRegion:cv::Rect(cv::Point(upC, upR), cv::Point(downC, downR)) withBins:bins withRadius:radius inTraining:frameCount < training withThreshold:trackThresh];
             
-            bool isClick = [clickBall isPresent:&frame inRegion:cv::Rect(cv::Point(upC, upR), cv::Point(downC, downR)) withBins:bins inTraining:false withThreshold:clickThresh];
+            bool isClick = [clickBall isPresent:&frame inRegion:cv::Rect(cv::Point(upCclick, upRclick), cv::Point(downCclick, downRclick)) withBins:bins inTraining:false withThreshold:clickThresh];
             
             cv::Point centreEst = trackBall.centre;
             
