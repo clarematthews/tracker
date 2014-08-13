@@ -55,6 +55,7 @@ int main(int argc, const char * argv[])
         int training = 5;
         int pixRange = 100; // size for subframes
         int pixRangeFac = 1; // multiplicative increase of range
+        double moveFac = 0.2; // proportion of distance to new point to move
         
         Mat state(4, 1, CV_32F);
         
@@ -106,17 +107,17 @@ int main(int argc, const char * argv[])
             cv::Point centreEst = ball.centre;
             
             if (isFound) {
-                state.at<float>(2) = (centreEst.x + upC - curX)/2; // col velocity
-                state.at<float>(3) = (centreEst.y + upR - curY)/2; // row velocity
-                state.at<float>(0) = centreEst.x + upC; // col
-                state.at<float>(1) = centreEst.y + upR; // row
+                state.at<float>(2) = moveFac*(centreEst.x + upC - curX)/2; // col velocity
+                state.at<float>(3) = moveFac*(centreEst.y + upR - curY)/2; // row velocity
+                state.at<float>(0) = state.at<float>(0) + moveFac*(centreEst.x + upC - state.at<float>(0)); // col
+                state.at<float>(1) = state.at<float>(1) + moveFac*(centreEst.y + upR - state.at<float>(1)); // row
                 pixRangeFac = 1;
             }
             else {
-                state.at<float>(2) = (centreEst.x - curX)/2; // col velocity
-                state.at<float>(3) = (centreEst.y - curY)/2; // row velocity
-                state.at<float>(0) = centreEst.x; // col
-                state.at<float>(1) = centreEst.y; // row
+                state.at<float>(2) = moveFac*(centreEst.x - curX)/2; // col velocity
+                state.at<float>(3) = moveFac*(centreEst.y - curY)/2; // row velocity
+                state.at<float>(0) = state.at<float>(0) + moveFac*(centreEst.x - state.at<float>(0)); // col
+                state.at<float>(1) = state.at<float>(1) + moveFac*(centreEst.y - state.at<float>(1)); // row
                 pixRangeFac = 2;
             }
             
