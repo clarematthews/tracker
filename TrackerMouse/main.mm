@@ -32,8 +32,8 @@ int main(int argc, const char * argv[])
         double trackThresh = 0;
         double clickThresh = 0;
         double clickWaitTime = 3; // secs to wait before next click
-        int clickSensitivity = 5; // number of frames ball must be present for
-        int clickFac = 1; // multiplicative factor for threshold;
+        int clickSensitivity = 3; // number of frames ball must be present for
+        double clickFac = 0.7; // multiplicative factor for threshold;
         double lastclick = -clickWaitTime;
         int clickCount = 0;
         int training = 5;
@@ -55,7 +55,7 @@ int main(int argc, const char * argv[])
         Mat frame;
         capture.read(frame);
         
-        Circle *circ = [[Circle alloc] initWithCentre:cv::Point(frame.cols/2, frame.rows/2) withRadius:radius withColour:Scalar(255, 200, 50)];
+        Circle *circ = [[Circle alloc] initWithCentre:cv::Point(frame.cols/2, frame.rows/2) withRadius:radius withColour:Scalar(130, 220, 40)];
         bool isTrackInitialised = false;
         bool isClickInitialised = false;
         int upC = circ.centre.x - pixRange;
@@ -77,11 +77,12 @@ int main(int argc, const char * argv[])
                 [clickBall isPresent:&frame inRegion:cv::Rect(cv::Point(upC, upR), cv::Point(downC, downR)) withBins:bins inTraining:true withThreshold:clickThresh];
                 clickThresh = clickThresh*clickFac;
                 isClickInitialised = true;
+                NSLog(@"thresh: %f", clickThresh);
             }
             
         }
         
-        circ.colour = Scalar(150, 150, 255);
+        circ.colour = Scalar(40, 180, 230);
         
         while (!isTrackInitialised) {
             capture.read(frame);
@@ -111,8 +112,6 @@ int main(int argc, const char * argv[])
         
         uint32_t count = 0;
         CGDirectDisplayID displayForPoint;
-        
-        NSLog(@"thresh: %f", clickThresh);
         
         while (capture.isOpened()) {
 
@@ -168,6 +167,27 @@ int main(int argc, const char * argv[])
                 curX = centreEst.x; // col
                 curY = centreEst.y; // row
                 pixRangeFac = 2;
+            }
+            
+            [xVals replaceObjectAtIndex:avgLoc withObject:[NSNumber numberWithDouble:curX]];
+            [yVals replaceObjectAtIndex:avgLoc withObject:[NSNumber numberWithDouble:curY]];
+            avgLoc = (avgLoc + 1)%framesToAvg;
+            
+            movingAvgX = 0;
+            for (NSNumber *num in xVals) {
+                movingAvgX += [num doubleValue];
+            }
+            movingAvgY = 0;
+            for (NSNumber *num in yVals) {
+                movingAvgY += [num doubleValue];
+            }
+            if (frameCount < framesToAvg) {
+                state.at<float>(0) = movingAvgX/frameCount;
+                state.at<float>(1) = movingAvgY/frameCount;
+            }
+            else {
+                state.at<float>(0) = movingAvgX/framesToAvg;
+                state.at<float>(1) = movingAvgY/framesToAvg;
             }
             
             // New mouse position
