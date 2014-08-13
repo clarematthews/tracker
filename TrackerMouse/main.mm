@@ -40,6 +40,17 @@ int main(int argc, const char * argv[])
         int pixRange = 100; // size for subframes
         int pixRangeFac = 1; // multiplicative factor to increase range
         
+        int framesToAvg = 5; // number of frames to average over
+        NSMutableArray *xVals = [[NSMutableArray alloc] initWithCapacity:framesToAvg];
+        NSMutableArray *yVals = [[NSMutableArray alloc] initWithCapacity:framesToAvg];
+        for (int i = 0; i < framesToAvg; ++i) {
+            xVals[i] = [NSNumber numberWithDouble:0.0];
+            yVals[i] = [NSNumber numberWithDouble:0.0];
+        }
+        int avgLoc = 0;
+        double movingAvgX = 0;
+        double movingAvgY = 0;
+        
         VideoCapture capture(0);
         Mat frame;
         capture.read(frame);
@@ -105,6 +116,8 @@ int main(int argc, const char * argv[])
         
         while (capture.isOpened()) {
 
+            ++frameCount;
+            
             capture.read(frame);
             flip(frame, frame, 1);
             resize(frame, frame, cv::Size(1440, 900));
@@ -145,15 +158,15 @@ int main(int argc, const char * argv[])
             if (isFound) {
                 state.at<float>(2) = (centreEst.x + upC - curX)/2; // col velocity
                 state.at<float>(3) = (centreEst.y + upR - curY)/2; // row velocity
-                state.at<float>(0) = centreEst.x + upC; // col
-                state.at<float>(1) = centreEst.y + upR; // row
+                curX = centreEst.x + upC; // col
+                curY = centreEst.y + upR; // row
                 pixRangeFac = 1;
             }
             else {
                 state.at<float>(2) = (centreEst.x - curX)/2; // col velocity
                 state.at<float>(3) = (centreEst.y - curY)/2; // row velocity
-                state.at<float>(0) = centreEst.x; // col
-                state.at<float>(1) = centreEst.y; // row
+                curX = centreEst.x; // col
+                curY = centreEst.y; // row
                 pixRangeFac = 2;
             }
             
@@ -191,7 +204,7 @@ int main(int argc, const char * argv[])
                 clickCount = 0;
             }
             
-            ++frameCount;
+            
             if (frameCount == training) {
                 trackThresh = trackThresh/training/2;
             }
