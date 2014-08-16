@@ -39,17 +39,7 @@ int main(int argc, const char * argv[])
         int training = 5;
         int pixRange = 100; // size for subframes
         int pixRangeFac = 1; // multiplicative factor to increase range
-        
-        int framesToAvg = 5; // number of frames to average over
-        NSMutableArray *xVals = [[NSMutableArray alloc] initWithCapacity:framesToAvg];
-        NSMutableArray *yVals = [[NSMutableArray alloc] initWithCapacity:framesToAvg];
-        for (int i = 0; i < framesToAvg; ++i) {
-            xVals[i] = [NSNumber numberWithDouble:0.0];
-            yVals[i] = [NSNumber numberWithDouble:0.0];
-        }
-        int avgLoc = 0;
-        double movingAvgX = 0;
-        double movingAvgY = 0;
+        double moveFac = 0.5;
         
         VideoCapture capture(0);
         Mat frame;
@@ -155,39 +145,18 @@ int main(int argc, const char * argv[])
             cv::Point centreEst = trackBall.centre;
             
             if (isFound) {
-                state.at<float>(2) = (centreEst.x + upC - curX)/2; // col velocity
-                state.at<float>(3) = (centreEst.y + upR - curY)/2; // row velocity
-                curX = centreEst.x + upC; // col
-                curY = centreEst.y + upR; // row
+                state.at<float>(2) = moveFac*(centreEst.x + upC - curX)/2; // col velocity
+                state.at<float>(3) = moveFac*(centreEst.y + upR - curY)/2; // row velocity
+                state.at<float>(0) = moveFac*(centreEst.x + upC - state.at<float>(0)) + state.at<float>(0); // col
+                state.at<float>(1) = moveFac*(centreEst.y + upR - state.at<float>(1)) + state.at<float>(1); // row
                 pixRangeFac = 1;
             }
             else {
-                state.at<float>(2) = (centreEst.x - curX)/2; // col velocity
-                state.at<float>(3) = (centreEst.y - curY)/2; // row velocity
-                curX = centreEst.x; // col
-                curY = centreEst.y; // row
+                state.at<float>(2) = moveFac*(centreEst.x - curX)/2; // col velocity
+                state.at<float>(3) = moveFac*(centreEst.y - curY)/2; // row velocity
+                state.at<float>(0) = moveFac*(centreEst.x - state.at<float>(0)) + state.at<float>(0); // col
+                state.at<float>(1) = moveFac*(centreEst.y - state.at<float>(1)) + state.at<float>(1); // row
                 pixRangeFac = 2;
-            }
-            
-            [xVals replaceObjectAtIndex:avgLoc withObject:[NSNumber numberWithDouble:curX]];
-            [yVals replaceObjectAtIndex:avgLoc withObject:[NSNumber numberWithDouble:curY]];
-            avgLoc = (avgLoc + 1)%framesToAvg;
-            
-            movingAvgX = 0;
-            for (NSNumber *num in xVals) {
-                movingAvgX += [num doubleValue];
-            }
-            movingAvgY = 0;
-            for (NSNumber *num in yVals) {
-                movingAvgY += [num doubleValue];
-            }
-            if (frameCount < framesToAvg) {
-                state.at<float>(0) = movingAvgX/frameCount;
-                state.at<float>(1) = movingAvgY/frameCount;
-            }
-            else {
-                state.at<float>(0) = movingAvgX/framesToAvg;
-                state.at<float>(1) = movingAvgY/framesToAvg;
             }
             
             // New mouse position
