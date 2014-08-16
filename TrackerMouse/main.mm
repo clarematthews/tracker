@@ -55,7 +55,7 @@ int main(int argc, const char * argv[])
         int training = 5;
         int pixRange = 100; // size for subframes
         int pixRangeFac = 1; // multiplicative increase of range
-        double moveFac = 0.2; // proportion of distance to new point to move
+        double moveFac = 0.5; // proportion of distance to new point to move
         
         Mat state(4, 1, CV_32F);
         
