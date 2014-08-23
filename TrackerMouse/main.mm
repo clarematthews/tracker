@@ -41,7 +41,7 @@ int main(int argc, const char * argv[])
         int pixRangeFac = 1; // multiplicative factor to increase range
         double moveFac = 0.5; // proportion of distance to new point to move
         
-        VideoCapture capture(0);
+        VideoCapture capture(0); // add error-if
         Mat frame;
         capture.read(frame);
         
@@ -52,9 +52,9 @@ int main(int argc, const char * argv[])
         int upR = circ.centre.y - pixRange;
         int downC = circ.centre.x + pixRange;
         int downR = circ.centre.y + pixRange;
-        
+            
         while (!isClickInitialised) {
-            capture.read(frame);
+            capture.read(frame); // add error-if
             flip(frame, frame, 1);
             
             // Add circle
@@ -64,7 +64,7 @@ int main(int argc, const char * argv[])
             
             if (waitKey(10) == 32) {
                 [clickBall setHistogram:&frame withBins:bins fromCircle:circ];
-                capture.read(frame);
+                capture.read(frame); // add error-if
                 [clickBall isPresent:&frame inRegion:cv::Rect(cv::Point(upC, upR), cv::Point(downC, downR)) withBins:bins inTraining:true withThreshold:clickThresh];
                 clickThresh = clickThresh*clickFac;
                 isClickInitialised = true;
@@ -76,7 +76,7 @@ int main(int argc, const char * argv[])
         circ.colour = Scalar(40, 180, 230);
         
         while (!isTrackInitialised) {
-            capture.read(frame);
+            capture.read(frame); // add error-if
             flip(frame, frame, 1);
             
             // Add circle
@@ -196,7 +196,7 @@ int main(int argc, const char * argv[])
                     double currentTime = CACurrentMediaTime();
                     if (currentTime > lastclick + clickWaitTime) {
                         NSLog(@"click! ");
-                        CGEventRef clickDown = CGEventCreateMouseEvent(NULL, kCGEventLeftMouseDown, newPoint, kCGMouseButtonLeft);
+                        CGEventRef clickDown = CGEventCreateMouseEvent(NULL, kCGEventLeftMouseDown, newPoint, kCGMouseButtonLeft); // need error check?
                         CGEventRef clickUp = CGEventCreateMouseEvent(NULL, kCGEventLeftMouseUp, newPoint, kCGMouseButtonLeft);
                         CGEventPost(kCGHIDEventTap, clickDown);
                         CGEventPost(kCGHIDEventTap, clickUp);
