@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB7BFF6319A8D6270010B456 /* Source.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB7BFF6219A8D6270010B456 /* Source.mm */; };
 		ABAFB94919991B820096BB4C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABAFB94819991B820096BB4C /* Foundation.framework */; };
 		ABAFB94C19991B820096BB4C /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = ABAFB94B19991B820096BB4C /* main.mm */; };
 		ABAFB95019991B820096BB4C /* TrackerMouse.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABAFB94F19991B820096BB4C /* TrackerMouse.1 */; };
@@ -33,6 +34,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AB7BFF6119A8D6270010B456 /* Source.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Source.h; sourceTree = "<group>"; };
+		AB7BFF6219A8D6270010B456 /* Source.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Source.mm; sourceTree = "<group>"; };
 		ABAFB94519991B820096BB4C /* TrackerMouse */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TrackerMouse; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABAFB94819991B820096BB4C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		ABAFB94B19991B820096BB4C /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
@@ -101,6 +104,8 @@
 				ABAFB94B19991B820096BB4C /* main.mm */,
 				ABAFB96019991DF70096BB4C /* Frame.h */,
 				ABAFB96119991DF70096BB4C /* Frame.mm */,
+				AB7BFF6119A8D6270010B456 /* Source.h */,
+				AB7BFF6219A8D6270010B456 /* Source.mm */,
 				ABAFB963199925FF0096BB4C /* Ball.h */,
 				ABAFB964199925FF0096BB4C /* Ball.mm */,
 				ABAFB966199932DF0096BB4C /* Circle.h */,
@@ -173,6 +178,7 @@
 				ABAFB94C19991B820096BB4C /* main.mm in Sources */,
 				ABAFB968199932DF0096BB4C /* Circle.mm in Sources */,
 				ABAFB96219991DF70096BB4C /* Frame.mm in Sources */,
+				AB7BFF6319A8D6270010B456 /* Source.mm in Sources */,
 				ABAFB965199925FF0096BB4C /* Ball.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -315,6 +321,7 @@
 				ABAFB95519991B820096BB4C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -1,8 +1,8 @@
 //
-//  Frame.h
+//  Source.h
 //  TrackerMouse
 //
-//  Created by Clare Matthews on 11/08/2014.
+//  Created by Clare Matthews on 23/08/2014.
 //  Copyright (c) 2014 Clare Matthews. All rights reserved.
 //
 
@@ -10,9 +10,12 @@
 #import <Foundation/Foundation.h>
 using namespace cv;
 
-@interface Frame : NSObject
+@interface Source : NSObject {
+    VideoCapture capture;
+}
 
--(void) showFrame;
-
+-(id) initWithCamera;
+-(Mat) captureFrame;
+-(bool) isOpen;
 
 @end
