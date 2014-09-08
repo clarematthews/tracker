@@ -9,6 +9,7 @@
 #import "opencv2/opencv.hpp"
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
+#import "Source.h"
 #import "Ball.h"
 
 using namespace std;
@@ -25,15 +26,14 @@ int main(int argc, const char * argv[])
         int radius = 50;
         Ball *ball = [[Ball alloc] init];
         
-        VideoCapture capture(0);
-        Mat frame;
-        capture.read(frame);
+        Source *source = [[Source alloc] initWithCamera];
+        Mat frame = source.captureFrame;
         
         Circle *circ = [[Circle alloc] initWithCentre:cv::Point(frame.cols/2, frame.rows/2) withRadius:radius];
         bool isInitialised = false;
         
         while (!isInitialised) {
-            capture.read(frame);
+            frame = source.captureFrame;
             flip(frame, frame, 1);
             
             // Add circle
@@ -68,9 +68,9 @@ int main(int argc, const char * argv[])
         uint32_t count = 0;
         CGDirectDisplayID displayForPoint;
         
-        while (capture.isOpened()) {
+        while (source.isOpen) {
 
-            capture.read(frame);
+            frame = source.captureFrame;
             flip(frame, frame, 1);
             resize(frame, frame, cv::Size(1440, 900));
 //            namedWindow("OpenCV Window", CV_WINDOW_NORMAL);
