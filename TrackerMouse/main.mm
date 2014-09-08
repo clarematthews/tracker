@@ -9,7 +9,6 @@
 #import "opencv2/opencv.hpp"
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
-#import "Frame.h"
 #import "Ball.h"
 
 using namespace std;
