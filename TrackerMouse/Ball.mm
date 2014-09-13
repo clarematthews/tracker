@@ -1,6 +1,9 @@
 //
-//  Ball.m
-//  TrackerMouse
+//  Ball.mm
+//  TrackerClick
+//
+//  Ball representing the coloured controller.
+//  Application attempts to detect a ball in each frame.
 //
 //  Created by Clare Matthews on 11/08/2014.
 //  Copyright (c) 2014 Clare Matthews. All rights reserved.
@@ -14,11 +17,15 @@
     return centre;
 }
 
+/*
+ * Initialise the colour description of the ball, using the pixels
+ * within a circle of the frame. The colour is represented by a
+ * histogram.
+ */
+
 -(void) setHistogram:(Mat*)frame withBins:(int)bins fromCircle:(Circle*)circ {
     
-//    circle(*frame, circ.centre, circ.radius, circ.colour, circ.width);
-//    imshow("Circle", *frame);
-//    waitKey(0);
+    // Initialise an array with required number of elements for the histogram bins
     
     int ***hist = new int**[bins];
     for (int x = 0; x < bins; ++x) {
@@ -34,6 +41,8 @@
     int chan0, chan1, chan2;
     Vec3b intensity;
     
+    // Describe the circle that contains the controller
+    
     int cx = (circ.centre).x;
     int cy = (circ.centre).y;
     double radius = circ.radius;
@@ -41,6 +50,8 @@
     double cols = (*frame).cols;
 
     cvtColor(*frame, *frame, COLOR_BGR2HSV);
+    
+    // Fill histogram bins with pixel counts
     
     int histSum = 0;
     for (int i = max(cx - radius, 0.0); i <= min(cx + radius, rows); ++i) {
@@ -61,6 +72,13 @@
     
 }
 
+/*
+ * Find the centre of controller in a frame.
+ * A subregion is checked initially. If the detection does not
+ * pass the given threshold, the full frame is then used.
+ * Returns true of the controller was detected in the subregion.
+ */
+
 -(bool) findCentre:(Mat*)frame inRegion:(cv::Rect) subRegion withBins:(int) bins withRadius:(int) radius inTraining:(bool) isTraining withThreshold:(double &)threshold {
     
     Mat subFrame(*frame, subRegion);
@@ -71,6 +89,11 @@
     
     while (true) {
         Mat imgHist(subFrame.rows, subFrame.cols, CV_64FC1);
+        
+        // Generate a binary kernel with value one if a point is
+        // within a given radial distance from the centre of the
+        // kernel
+        
         Mat kernel(2*radius + 1, 2*radius + 1, CV_8UC1);
         int centrePix = radius + 1;
         uchar *kerRowx;
@@ -86,11 +109,16 @@
             }
         }
         
+        // Generate a histogram representation of the frame
+        
         int ***hist = getHist(&subFrame, bins);
+        
+        // Compare the frame histogram to the ball histogram
+        
         double ***R = new double**[bins];
         int testVal;
         int histSum = subFrame.rows*subFrame.cols;
-        int fac = histSum/initPixels;
+        int fac = histSum/initPixels; // Multiplicative constant to allow comparison of histograms of different sizes
         for (int x = 0; x < bins; ++x) {
             R[x] = new double*[bins];
             for (int y = 0; y < bins; ++y) {
@@ -102,15 +130,18 @@
                     else {
                         testVal = fac*(colour[x][y][z])/(hist[x][y][z]);
                         if (testVal < 1) {
-                            R[x][y][z] = testVal;
+                            R[x][y][z] = testVal; // Colour more likely in frame than in controller
                         }
                         else {
-                            R[x][y][z] = 1;
+                            R[x][y][z] = 1; // Colour more likely in controller than in frame
                         }
                     }
                 }
             }
         }
+        
+        // Replace each pixel value in the image by the indexed value in the histogram ratio R
+        
         double *rowx;
         Vec3b intensity;
         int chan0, chan1, chan2;
@@ -125,10 +156,17 @@
             }
         }
         
+        // Convolve the indexed image and kernel
+        
         Mat imgConv;
         filter2D(imgHist, imgConv, -1, kernel);
         double maxVal;
+        
+        // Estimate of the controller centre is the point with maximum value in the convolved image
+        
         cv::minMaxLoc(imgConv, NULL, &maxVal, NULL, &centreEst);
+        
+        // If the maximum value does not exceed threshold, repeat detection using full frame
         
         if (isTraining) {
             threshold += maxVal;
@@ -154,9 +192,15 @@
     
 }
 
+/*
+ * Represent the colours of pixels in a RGB image by an HSV histogram
+ */
+
 int ***getHist(Mat *imgBGR, int bins) {
     Mat frame = *imgBGR;
     cvtColor(frame, frame, COLOR_BGR2HSV);
+    
+    // Initialise an array with required number of elements for the histogram bins
     
     int ***hist = new int**[bins];
     for (int x = 0; x < bins; ++x) {
@@ -172,6 +216,8 @@ int ***getHist(Mat *imgBGR, int bins) {
     int chan0, chan1, chan2;
     Vec3b intensity;
     
+    // Fill histogram bins with pixel counts
+    
     for (int i = 0; i < frame.rows; ++i) {
         for (int j = 0; j < frame.cols; ++j) {
             intensity = frame.at<Vec3b>(i, j);
@@ -184,6 +230,13 @@ int ***getHist(Mat *imgBGR, int bins) {
     
     return hist;
 }
+
+/*
+ *  Detect whether the ball is present in a subregion of a frame.
+ *  Count the number of pixels for which the colour is more likely in the controller 
+ *  colour distribution than in the frame distribution, and compare this to the
+ *  threshold.
+ */
 
 -(bool) isPresent:(Mat*)frame inRegion:(cv::Rect)subRegion withBins:(int)bins inTraining:(bool)isTraining withThreshold:(double&)threshold {
     
@@ -201,7 +254,7 @@ int ***getHist(Mat *imgBGR, int bins) {
             for (int z = 0; z < bins; ++z) {
                 if (hist[x][y][z] != 0) {
                     testVal = fac*(colour[x][y][z])/(hist[x][y][z]);
-                    if (testVal < 1) {
+                    if (testVal > 1) {
                         testSum++;
                     }
                 }

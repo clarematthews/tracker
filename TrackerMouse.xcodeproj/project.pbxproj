@@ -14,9 +14,9 @@
 		ABAFB95D19991CFF0096BB4C /* libopencv_core.2.4.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABAFB95A19991CFF0096BB4C /* libopencv_core.2.4.8.dylib */; };
 		ABAFB95E19991CFF0096BB4C /* libopencv_highgui.2.4.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABAFB95B19991CFF0096BB4C /* libopencv_highgui.2.4.8.dylib */; };
 		ABAFB95F19991CFF0096BB4C /* libopencv_imgproc.2.4.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABAFB95C19991CFF0096BB4C /* libopencv_imgproc.2.4.8.dylib */; };
-		ABAFB96219991DF70096BB4C /* Frame.mm in Sources */ = {isa = PBXBuildFile; fileRef = ABAFB96119991DF70096BB4C /* Frame.mm */; };
 		ABAFB965199925FF0096BB4C /* Ball.mm in Sources */ = {isa = PBXBuildFile; fileRef = ABAFB964199925FF0096BB4C /* Ball.mm */; };
 		ABAFB968199932DF0096BB4C /* Circle.mm in Sources */ = {isa = PBXBuildFile; fileRef = ABAFB967199932DF0096BB4C /* Circle.mm */; };
+		ABCF6E0119C474AD00EC499F /* Source.mm in Sources */ = {isa = PBXBuildFile; fileRef = ABCF6E0019C474AD00EC499F /* Source.mm */; };
 		ABF2A064199B60F6008AB0CD /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABF2A063199B60F6008AB0CD /* QuartzCore.framework */; };
 		ABF2A066199BAD07008AB0CD /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABF2A065199BAD07008AB0CD /* ApplicationServices.framework */; };
 /* End PBXBuildFile section */
@@ -44,12 +44,12 @@
 		ABAFB95A19991CFF0096BB4C /* libopencv_core.2.4.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_core.2.4.8.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.8.2/lib/libopencv_core.2.4.8.dylib; sourceTree = "<group>"; };
 		ABAFB95B19991CFF0096BB4C /* libopencv_highgui.2.4.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_highgui.2.4.8.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.8.2/lib/libopencv_highgui.2.4.8.dylib; sourceTree = "<group>"; };
 		ABAFB95C19991CFF0096BB4C /* libopencv_imgproc.2.4.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_imgproc.2.4.8.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.8.2/lib/libopencv_imgproc.2.4.8.dylib; sourceTree = "<group>"; };
-		ABAFB96019991DF70096BB4C /* Frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Frame.h; sourceTree = "<group>"; };
-		ABAFB96119991DF70096BB4C /* Frame.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Frame.mm; sourceTree = "<group>"; };
 		ABAFB963199925FF0096BB4C /* Ball.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ball.h; sourceTree = "<group>"; };
 		ABAFB964199925FF0096BB4C /* Ball.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Ball.mm; sourceTree = "<group>"; };
 		ABAFB966199932DF0096BB4C /* Circle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Circle.h; sourceTree = "<group>"; };
 		ABAFB967199932DF0096BB4C /* Circle.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Circle.mm; sourceTree = "<group>"; };
+		ABCF6DFF19C474AD00EC499F /* Source.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Source.h; sourceTree = "<group>"; };
+		ABCF6E0019C474AD00EC499F /* Source.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Source.mm; sourceTree = "<group>"; };
 		ABF2A063199B60F6008AB0CD /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		ABF2A065199BAD07008AB0CD /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -107,8 +107,8 @@
 			isa = PBXGroup;
 			children = (
 				ABAFB94B19991B820096BB4C /* main.mm */,
-				ABAFB96019991DF70096BB4C /* Frame.h */,
-				ABAFB96119991DF70096BB4C /* Frame.mm */,
+				ABCF6DFF19C474AD00EC499F /* Source.h */,
+				ABCF6E0019C474AD00EC499F /* Source.mm */,
 				ABAFB963199925FF0096BB4C /* Ball.h */,
 				ABAFB964199925FF0096BB4C /* Ball.mm */,
 				ABAFB966199932DF0096BB4C /* Circle.h */,
@@ -180,7 +180,7 @@
 			files = (
 				ABAFB94C19991B820096BB4C /* main.mm in Sources */,
 				ABAFB968199932DF0096BB4C /* Circle.mm in Sources */,
-				ABAFB96219991DF70096BB4C /* Frame.mm in Sources */,
+				ABCF6E0119C474AD00EC499F /* Source.mm in Sources */,
 				ABAFB965199925FF0096BB4C /* Ball.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
