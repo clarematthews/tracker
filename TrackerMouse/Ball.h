@@ -1,6 +1,9 @@
 //
 //  Ball.h
-//  TrackerMouse
+//  TrackerClick
+//
+//  Ball representing the coloured controller.
+//  Application attempts to detect a ball in each frame.
 //
 //  Created by Clare Matthews on 11/08/2014.
 //  Copyright (c) 2014 Clare Matthews. All rights reserved.
