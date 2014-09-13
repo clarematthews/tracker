@@ -2,6 +2,8 @@
 //  Circle.h
 //  TrackerMouse
 //
+//  Circle describes a circle to display on screen to initialise the colour of the controller
+//
 //  Created by Clare Matthews on 11/08/2014.
 //  Copyright (c) 2014 Clare Matthews. All rights reserved.
 //
@@ -11,10 +13,6 @@
 using namespace cv;
 
 @interface Circle : NSObject {
-//    Point centre;
-//    double radius;
-//    Scalar colour;
-//    int width;
 }
 
 @property cv::Point centre;
