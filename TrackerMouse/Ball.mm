@@ -233,43 +233,85 @@ int ***getHist(Mat *imgBGR, int bins) {
 
 /*
  *  Detect whether the ball is present in a subregion of a frame.
- *  Count the number of pixels for which the colour is more likely in the controller 
- *  colour distribution than in the frame distribution, and compare this to the
- *  threshold.
  */
 
 -(bool) isPresent:(Mat*)frame inRegion:(cv::Rect)subRegion withBins:(int)bins inTraining:(bool)isTraining withThreshold:(double&)threshold {
     
     Mat subFrame(*frame, subRegion);
     
+    cv::Point centreEst;
+    
+    int radius = 40;
+    
     Mat imgHist(subFrame.rows, subFrame.cols, CV_64FC1);
+    Mat kernel(2*radius + 1, 2*radius + 1, CV_8UC1);
+    int centrePix = radius + 1;
+    uchar *kerRowx;
+    for (int x = 0; x <= 2*radius; ++x) {
+        kerRowx = kernel.ptr(x);
+        for (int y = 0; y <= 2*radius; ++y) {
+            if ((centrePix - x)*(centrePix - x) + (centrePix - y)*(centrePix - y) < radius*radius) {
+                kerRowx[y] = 1;
+            }
+            else {
+                kerRowx[y] = 0;
+            }
+        }
+    }
     
     int ***hist = getHist(&subFrame, bins);
-    double testSum;
+    double ***R = new double**[bins];
     int testVal;
     int histSum = subFrame.rows*subFrame.cols;
     int fac = histSum/initPixels;
     for (int x = 0; x < bins; ++x) {
+        R[x] = new double*[bins];
         for (int y = 0; y < bins; ++y) {
+            R[x][y] = new double[bins];
             for (int z = 0; z < bins; ++z) {
-                if (hist[x][y][z] != 0) {
+                if (hist[x][y][z] == 0) {
+                    R[x][y][z] = 1;
+                }
+                else {
                     testVal = fac*(colour[x][y][z])/(hist[x][y][z]);
-                    if (testVal > 1) {
-                        testSum++;
+                    if (testVal < 1) {
+                        R[x][y][z] = testVal;
+                    }
+                    else {
+                        R[x][y][z] = 1;
                     }
                 }
             }
         }
     }
-
+    double *rowx;
+    Vec3b intensity;
+    int chan0, chan1, chan2;
+    for (int x = 0; x < imgHist.rows; ++x) {
+        rowx = imgHist.ptr<double>(x);
+        for (int y = 0; y < imgHist.cols; ++ y) {
+            intensity = subFrame.at<Vec3b>(x, y);
+            chan0 = (int)intensity(0)*bins/256;
+            chan1 = (int)intensity(1)*bins/256;
+            chan2 = (int)intensity(2)*bins/256;
+            rowx[y] = R[chan0][chan1][chan2];
+        }
+    }
+    
+    Mat imgConv;
+    filter2D(imgHist, imgConv, -1, kernel);
+    
+    double maxVal;
+    cv::minMaxLoc(imgConv, NULL, &maxVal, NULL, &centreEst);
+    //    NSLog(@"maxval: %f", maxVal);
     if (isTraining) {
-        threshold += testSum;
+        threshold += maxVal;
         return false;
     }
-    else if (testSum > threshold) {
+    else if (maxVal > threshold) {
         return true;
     }
-
+    
     return false;
 }
 
