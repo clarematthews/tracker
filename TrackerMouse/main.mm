@@ -44,7 +44,7 @@ int main(int argc, const char * argv[])
         // Number of initial frames to use to calculate threshold
         int trainingFrames = 5;
         // Size of subframes used for initial detection
-        int subframePix = 200;
+        int subframePix = 100;
         // Proportion of distance to new point to move
         double moveFac = 0.5;
         // Number of bins for histogram model
@@ -54,9 +54,9 @@ int main(int argc, const char * argv[])
         // Time to wait before next click can register (s)
         double clickWaitTime = 3;
         // Number of frames ball must be present for to register click
-        int clickSensitivity = 3;
+        int clickSensitivity = 2;
         // Multiplicative factor for threshold
-        double clickFac = 0.7;
+        double clickFac = 0.8;
         
         // Initialse image source
         
